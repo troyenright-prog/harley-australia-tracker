@@ -1,0 +1,46 @@
+{
+  "observed_at": "2026-10-13T01:03:04.480914+00:00",
+  "status": "ok",
+  "observations": 2,
+  "sources": [
+    {
+      "source": "Bikebiz",
+      "status": "ok",
+      "inventory_urls": 122,
+      "candidates": 1,
+      "observed": 1,
+      "errors": []
+    },
+    {
+      "source": "Brisans",
+      "status": "ok",
+      "inventory_urls": 212,
+      "candidates": 1,
+      "observed": 1,
+      "errors": []
+    },
+    {
+      "source": "Harley-Heaven",
+      "status": "ok",
+      "inventory_urls": 264,
+      "candidates": 0,
+      "observed": 0,
+      "errors": []
+    }
+  ],
+  "events": [
+    [
+      "NEW",
+      "Seventy-Two",
+      13790,
+      "https://www.bikebiz.com.au/used-bikes/harley-davidson-seventy-two-xl1200v-2012-cnshd72"
+    ],
+    [
+      "NEW",
+      "Seventy-Two",
+      16490,
+      "https://www.stock.brisans.com.au/used-bikes/for-sale/harley-davidson/seventy-two-xl1200v/2015/sportster/4128206"
+    ]
+  ],
+  "note": "Limited dealer coverage. Indexed/manual leads do not confirm availability. No automatic Bikesales, Gumtree or Facebook coverage without configured alert feeds."
+}

@@ -1,0 +1,4 @@
+# Optional Google Alerts feeds
+# Copy this file to feeds.txt for local use (feeds.txt is ignored by Git).
+# Put one user-created https://www.google.com/alerts/feeds/... URL per line.
+# For GitHub Actions, use the ALERT_FEEDS repository secret instead.

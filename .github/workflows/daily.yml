@@ -1,0 +1,109 @@
+name: Harley listings daily
+on:
+  schedule:
+    - cron: '15 21 * * *' # Approximately 07:15 Australia/Brisbane
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['*.py', 'report.html', 'tests/**', '.github/workflows/daily.yml']
+permissions:
+  contents: write
+concurrency:
+  group: harley-daily
+  cancel-in-progress: false
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Regression tests
+        run: python -m unittest discover -s tests -v
+      - name: Discover and recheck public listings
+        id: scan
+        continue-on-error: true
+        env:
+          ALERT_FEEDS: ${{ secrets.ALERT_FEEDS }}
+        run: python tracker.py
+      - name: Persist listing history and scan health
+        if: always() && steps.scan.outcome != 'skipped'
+        run: |
+          test -f scan_status.json
+          test -f listings.sqlite3
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add listings.sqlite3 results.csv scan_status.json docs/index.html
+          if ! git diff --cached --quiet; then
+            git commit -m "Daily listing history and health"
+            git push
+          fi
+          python - <<'PY'
+          import json, os
+          s=json.load(open('scan_status.json'))
+          with open(os.environ['GITHUB_STEP_SUMMARY'],'a') as f:
+              f.write('## Listing scan: '+s['status']+'\n\n'+s['note']+'\n\n')
+              for source in s['sources']:
+                  f.write('- '+source['source']+': '+source['status']+'\n')
+          PY
+      - name: Email pending new listings and price reductions
+        id: email
+        continue-on-error: true
+        env:
+          SMTP_HOST: ${{ secrets.SMTP_HOST }}
+          SMTP_USER: ${{ secrets.SMTP_USER }}
+          SMTP_PASSWORD: ${{ secrets.SMTP_PASSWORD }}
+          SMTP_PORT: ${{ secrets.SMTP_PORT }}
+          MAIL_TO: ${{ secrets.MAIL_TO }}
+          MAIL_FROM: ${{ secrets.MAIL_FROM }}
+        run: python tracker.py --notify-only
+      - name: Persist notification receipts
+        run: |
+          git add listings.sqlite3
+          if ! git diff --cached --quiet; then
+            git commit -m "Save notification receipts"
+            git push
+          fi
+      - name: Publish report artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: harley-report
+          path: |
+            docs/index.html
+            results.csv
+            scan_status.json
+          retention-days: 3
+          if-no-files-found: error
+      - name: Fail visibly on scan or email failure
+        if: always()
+        env:
+          SCAN: ${{ steps.scan.outcome }}
+          EMAIL: ${{ steps.email.outcome }}
+        run: |
+          test "$SCAN" = success
+          test "$EMAIL" = success
+  pages:
+    if: always() && needs.monitor.result != 'cancelled'
+    needs: monitor
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: docs
+      - uses: actions/deploy-pages@v4
+        id: deploy

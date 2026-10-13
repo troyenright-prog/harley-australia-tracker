@@ -1,0 +1,36 @@
+{
+  "observed_at": "2026-10-13T01:08:23.400002+00:00",
+  "status": "ok",
+  "observations": 2,
+  "sources": [
+    {
+      "source": "Bikebiz",
+      "status": "ok",
+      "inventory_urls": 122,
+      "candidates": 1,
+      "observed": 1,
+      "errors": [],
+      "accepted": 1
+    },
+    {
+      "source": "Brisans",
+      "status": "ok",
+      "inventory_urls": 212,
+      "candidates": 1,
+      "observed": 1,
+      "errors": [],
+      "accepted": 1
+    },
+    {
+      "source": "Harley-Heaven",
+      "status": "ok",
+      "inventory_urls": 264,
+      "candidates": 0,
+      "observed": 0,
+      "errors": [],
+      "accepted": 0
+    }
+  ],
+  "events": [],
+  "note": "Limited dealer coverage. Indexed/manual leads do not confirm availability. No automatic Bikesales, Gumtree or Facebook coverage without configured alert feeds."
+}

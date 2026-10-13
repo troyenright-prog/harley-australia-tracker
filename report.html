@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Australian Harley listing tracker</title>
+<style>
+body{font:16px/1.5 system-ui,sans-serif;background:#f4f4f0;color:#202321;margin:0;padding:clamp(16px,4vw,60px)}
+header{max-width:1000px}h1{font-size:clamp(28px,4vw,48px);margin:0}small{color:#59615c}
+.panel{background:white;border:1px solid #d5dbd5;border-radius:12px;padding:18px;margin:20px 0}
+label{display:inline-block;margin:6px 20px 6px 0}select,input{font:inherit;padding:8px;border:1px solid #929b95;border-radius:5px}
+table{border-collapse:collapse;width:100%;white-space:nowrap}th,td{padding:12px;text-align:left;border-bottom:1px solid #ddd}th{background:#e9ede9}
+a{color:#145940}button{font:inherit;cursor:pointer}.table-wrap{overflow:auto}.failed{color:#9c2918}.ok{color:#22633d}
+</style>
+<header><small>AUSTRALIA · DAILY DISCOVERY · NO PRICE CEILING</small><h1>Harley listing tracker</h1>
+<p>Iron 1200 · 2018–2021 &nbsp; / &nbsp; Seventy-Two · 2012–2016</p>
+<p>Public dealer observations and optional alert leads. Seller availability must be confirmed. Coverage is incomplete.</p></header>
+<section class="panel"><strong id="health"></strong><div id="freshness"></div><details><summary>Source health and coverage</summary><pre id="sources" style="white-space:pre-wrap"></pre></details></section>
+<section class="panel"><label>Model <select id="model"><option value="">Both models</option>Iron 1200</option><option>Seventy-Two</option></select></label>
+<label>Sort <select id="sort"><option value="price_aud">Price: low to high</option><option value="price_desc">Price: high to low</option><option value="kilometres">Kilometres</option><option value="year">Year</option><option value="first_seen">Newest discovery</option></select></label>
+<label>Search <input id="query" placeholder="Location, source or title"></label>
+<label><input id="duplicates" type="checkbox"> Show duplicate ads</label><label><input id="unavailable" type="checkbox"> Include unavailable history</label>
+<p id="count"></p><div class="table-wrap"><table><thead><tr><th>Motorcycle</th><th>Price AUD</th><th>Kilometres</th><th>Location</th><th>Source</th><th>Status</th><th>First discovered (UTC)</th><th>Last observed (UTC)</th></tr></thead><tbody id="rows"></tbody></table></div></section>
+<p>“Last observed” is when this tracker saw the listing, not its original posting date. A past observation is not proof of current availability. Blank values mean unknown. Prices may exclude government charges.</p>
+<script>
+const data=__TRACKER_DATA__;
+const $=id=>document.getElementById(id);
+$('health').textContent='Latest scan: '+data.scan.status+' · '+data.scan.observations+' observations';
+$('health').className=data.scan.status==='ok'?'ok':'failed';
+const age=(Date.now()-Date.parse(data.scan.observed_at))/86400000;
+$('freshness').textContent=data.scan.observed_at+(age>2?' — WARNING: report is over 2 days old':'');
+$('sources').textContent=data.scan.note+'\n\n'+JSON.stringify(data.scan.sources,null,2);
+function render(){
+ let rows=data.listings.filter(r=>(!$('model').value||r.model===$('model').value)&&($('duplicates').checked||!r.duplicate_of)&&($('unavailable').checked||!r.status.includes('unavailable'))&&[r.title,r.location,r.source].join(' ').toLowerCase().includes($('query').value.toLowerCase()));
+ const sort=$('sort').value;
+ rows.sort((a,b)=>{if(sort==='first_seen')return b.first_seen.localeCompare(a.first_seen);const key=sort==='price_desc'?'price_aud':sort;if(a[key]==null)return b[key]==null?0:1;if(b[key]==null)return -1;return (a[key]-b[key])*(sort==='price_desc'?-1:1)});
+ $('count').textContent=rows.length+' displayed · '+data.listings.length+' ads in history';$('rows').replaceChildren();
+ for(const r of rows){const tr=document.createElement('tr');const title=document.createElement('td'),a=document.createElement('a');a.href=r.url;a.textContent=r.title;a.target='_blank';a.rel='noopener noreferrer';title.append(a);tr.append(title);
+ for(const v of [r.price_aud==null?'Unknown':r.price_aud.toLocaleString('en-AU')+' '+(r.price_basis||''),r.kilometres==null?'Unknown':r.kilometres.toLocaleString('en-AU'),r.location||'Unknown',r.source,r.status+(r.duplicate_of?' · duplicate':''),r.first_seen,r.last_seen]){const td=document.createElement('td');td.textContent=v;tr.append(td)}$('rows').append(tr)}
+}
+for(const id of ['model','sort','query','duplicates','unavailable'])$(id).addEventListener('input',render);render();
+</script></html>

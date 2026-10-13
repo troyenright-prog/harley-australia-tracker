@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+.env
+feeds.txt
+evidence/
+local-test/
+last_errors.txt
+*.zip
