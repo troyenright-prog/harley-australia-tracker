@@ -40,6 +40,8 @@ The Brisans page's embedded public stock data and rendered seller details agree 
 
 23 regression tests pass locally: model variants and exclusions, year boundaries, high prices without a ceiling, plain-digit odometers, exact URL/VIN deduplication, persistent first/last observations and price history, reductions vs increases, missing-price preservation, stale-index protection, RSS/Atom parsing, invalid/search/foreign URLs, robots denial, changed page structure, email retry/receipts, and report script escaping.
 
+A separate end-to-end run with network access unavailable (`--data-dir local-test`) returned exit code 1, recorded all three source failures, and generated a report explicitly warning that zero observations do not establish an empty market. The production database was not modified.
+
 Email uses mocks only: no SMTP credentials or destination were supplied, so real delivery has not been verified. No Google Alerts feed was supplied, so the RSS adapter has parsing tests but no user-feed end-to-end verification.
 
 ## Evidence references
@@ -52,6 +54,7 @@ Email uses mocks only: no SMTP credentials or destination were supplied, so real
 - [Gumtree Australia search/filter guidance](https://help.gumtree.com.au/articles/en_US/KB_Article/How-to-search-and-filter-results-AU/?c=PKB%3ATechnical_Issue&fs=RelatedArticle&l=en_US)
 - [Facebook on authorised and unauthorised scraping](https://www.facebook.com/help/463983701520800)
 - [GitHub free standard public runners](https://docs.github.com/en/actions/how-tos/write-workflows/choose-where-workflows-run/choose-the-runner-for-a-job)
+- [Gmail app-password setup and account limitations](https://support.google.com/accounts/answer/185833?hl=en)
 - [GitHub scheduled-workflow inactivity rule](https://docs.github.com/en/actions/how-tos/manage-workflow-runs/disable-and-enable-workflows)
 
 ## Deployment verification
@@ -64,3 +67,5 @@ Repository created: https://github.com/troyenright-prog/harley-australia-tracker
 - The live Pages report was opened and its listing fields checked. Browser validation found a missing opening option tag in the Iron 1200 filter; this was corrected and covered by a regression test.
 - Daily workflow cron is `15 21 * * *`, approximately 07:15 Brisbane. Scheduled workflow is enabled. A push-triggered run verifies automatic execution, but no future cron occurrence is claimed to have completed during this session.
 - SMTP credentials and Google Alerts feeds are not configured. Email step safely reported not configured; real email delivery remains unverified.
+
+- [Final deployment with all 23 tests](https://github.com/troyenright-prog/harley-australia-tracker/actions/runs/38331022776): completed successfully. Live UI checks verified the Iron filter (zero current matches), both-model results (two), descending price sort, and Granville location search (one). Source code is commit `0257a51`; final data commit is `71038ae`.
