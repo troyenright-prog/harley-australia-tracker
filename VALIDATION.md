@@ -38,7 +38,7 @@ The Brisans page's embedded public stock data and rendered seller details agree 
 
 ## Automated validation
 
-22 regression tests pass locally: model variants and exclusions, year boundaries, high prices without a ceiling, plain-digit odometers, exact URL/VIN deduplication, persistent first/last observations and price history, reductions vs increases, missing-price preservation, stale-index protection, RSS/Atom parsing, invalid/search/foreign URLs, robots denial, changed page structure, email retry/receipts, and report script escaping.
+23 regression tests pass locally: model variants and exclusions, year boundaries, high prices without a ceiling, plain-digit odometers, exact URL/VIN deduplication, persistent first/last observations and price history, reductions vs increases, missing-price preservation, stale-index protection, RSS/Atom parsing, invalid/search/foreign URLs, robots denial, changed page structure, email retry/receipts, and report script escaping.
 
 Email uses mocks only: no SMTP credentials or destination were supplied, so real delivery has not been verified. No Google Alerts feed was supplied, so the RSS adapter has parsing tests but no user-feed end-to-end verification.
 
@@ -58,4 +58,9 @@ Email uses mocks only: no SMTP credentials or destination were supplied, so real
 
 Repository created: https://github.com/troyenright-prog/harley-australia-tracker
 
-Live Actions and Pages verification will be recorded here after deployment. The daily cron is configuration; a completed manually dispatched or push-triggered run does not prove a future scheduled run occurred.
+- [First hosted run, triggered automatically by push](https://github.com/troyenright-prog/harley-australia-tracker/actions/runs/38330766205): successful tests, live scan, data commit, report artifact and Pages deployment.
+- [Second hosted run, workflow_dispatch](https://github.com/troyenright-prog/harley-australia-tracker/actions/runs/38330853191): successful on a fresh runner, using the previous committed database.
+- Data commits: `342bab1` and `2383476`. Both retain two listing rows and the original discovery timestamp `2026-10-13T01:03:04.480914+00:00`; last-observed timestamps advance. No duplicate NEW events were generated. The database contains two initial NEW events and two initial price observations.
+- The live Pages report was opened and its listing fields checked. Browser validation found a missing opening option tag in the Iron 1200 filter; this was corrected and covered by a regression test.
+- Daily workflow cron is `15 21 * * *`, approximately 07:15 Brisbane. Scheduled workflow is enabled. A push-triggered run verifies automatic execution, but no future cron occurrence is claimed to have completed during this session.
+- SMTP credentials and Google Alerts feeds are not configured. Email step safely reported not configured; real email delivery remains unverified.

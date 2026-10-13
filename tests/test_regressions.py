@@ -4,6 +4,7 @@ import sqlite3
 import sys
 import tempfile
 import unittest
+from html.parser import HTMLParser
 from pathlib import Path
 from unittest.mock import patch, MagicMock
 sys.path.insert(0,str(Path(__file__).resolve().parents[1]))
@@ -117,5 +118,20 @@ class RegressionTests(unittest.TestCase):
                 tracker.export(self.db,report)
                 output=(root/'docs/index.html').read_text(encoding='utf-8')
                 self.assertIn('\\u003c/script>',output)
+
+    def test_report_model_choices(self):
+        class Options(HTMLParser):
+            def __init__(self):
+                super().__init__(); self.model=False; self.option=False; self.values=[]
+            def handle_starttag(self,tag,attrs):
+                if tag=='select': self.model=dict(attrs).get('id')=='model'
+                if tag=='option' and self.model: self.option=True
+            def handle_endtag(self,tag):
+                if tag=='select': self.model=False
+                if tag=='option': self.option=False
+            def handle_data(self,data):
+                if self.model and self.option:self.values.append(data)
+        parser=Options();parser.feed((tracker.ROOT/'report.html').read_text(encoding='utf-8'))
+        self.assertEqual(parser.values,['Both models','Iron 1200','Seventy-Two'])
 
 if __name__=='__main__': unittest.main()
