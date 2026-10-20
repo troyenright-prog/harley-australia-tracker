@@ -1,12 +1,12 @@
 {
-  "observed_at": "2026-10-18T23:07:43.912190+00:00",
+  "observed_at": "2026-10-20T00:18:00.695429+00:00",
   "status": "ok",
   "observations": 2,
   "sources": [
     {
       "source": "Bikebiz",
       "status": "ok",
-      "inventory_urls": 122,
+      "inventory_urls": 123,
       "candidates": 1,
       "observed": 1,
       "errors": [],
@@ -15,7 +15,7 @@
     {
       "source": "Brisans",
       "status": "ok",
-      "inventory_urls": 228,
+      "inventory_urls": 229,
       "candidates": 1,
       "observed": 1,
       "errors": [],
@@ -24,7 +24,7 @@
     {
       "source": "Harley-Heaven",
       "status": "ok",
-      "inventory_urls": 264,
+      "inventory_urls": 263,
       "candidates": 0,
       "observed": 0,
       "errors": [],
