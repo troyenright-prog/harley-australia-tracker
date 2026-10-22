@@ -1,5 +1,5 @@
 {
-  "observed_at": "2026-10-21T23:59:10.399515+00:00",
+  "observed_at": "2026-10-22T23:58:14.565492+00:00",
   "status": "ok",
   "observations": 2,
   "sources": [
@@ -15,7 +15,7 @@
     {
       "source": "Brisans",
       "status": "ok",
-      "inventory_urls": 234,
+      "inventory_urls": 236,
       "candidates": 1,
       "observed": 1,
       "errors": [],
@@ -24,7 +24,7 @@
     {
       "source": "Harley-Heaven",
       "status": "ok",
-      "inventory_urls": 260,
+      "inventory_urls": 259,
       "candidates": 0,
       "observed": 0,
       "errors": [],
