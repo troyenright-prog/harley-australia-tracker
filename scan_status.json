@@ -1,21 +1,23 @@
 {
-  "observed_at": "2026-11-19T02:30:41.288096+00:00",
-  "status": "ok",
-  "observations": 2,
+  "observed_at": "2026-11-20T02:16:27.870032+00:00",
+  "status": "failed",
+  "observations": 1,
   "sources": [
     {
       "source": "Bikebiz",
-      "status": "ok",
-      "inventory_urls": 130,
+      "status": "failed",
+      "inventory_urls": 120,
       "candidates": 1,
-      "observed": 1,
-      "errors": [],
-      "accepted": 1
+      "observed": 0,
+      "errors": [
+        "HTTP 429: https://www.bikebiz.com.au/used-bikes/harley-davidson-seventy-two-xl1200v-2012-cnshd72"
+      ],
+      "accepted": 0
     },
     {
       "source": "Brisans",
       "status": "ok",
-      "inventory_urls": 217,
+      "inventory_urls": 212,
       "candidates": 1,
       "observed": 1,
       "errors": [],
