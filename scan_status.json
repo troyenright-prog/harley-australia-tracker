@@ -1,5 +1,5 @@
 {
-  "observed_at": "2026-11-22T01:13:32.645622+00:00",
+  "observed_at": "2026-11-23T01:38:08.917686+00:00",
   "status": "failed",
   "observations": 1,
   "sources": [
@@ -17,7 +17,7 @@
     {
       "source": "Brisans",
       "status": "ok",
-      "inventory_urls": 204,
+      "inventory_urls": 216,
       "candidates": 1,
       "observed": 1,
       "errors": [],
